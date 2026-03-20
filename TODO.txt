@@ -1,3 +1,6 @@
+FiX small issues and cleaner code
+ADD README
+Publish without TODO list
 ADD Scroll menu
 ADD Rarity color on text
 ADD Hovering display

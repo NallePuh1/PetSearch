@@ -1,5 +1,5 @@
-
-
+---@type Frame
+MyPetMountSearchFrame = MyPetMountSearchFrame
 
 -- Function to get all mount names
 local function GetAllMountNames()
@@ -33,6 +33,7 @@ local function GetAllPetNames()
 
     return petNames
 end
+
 
 -- Add functionality to press the icons
 local function OnIconClick(companionType, companionID)
@@ -213,7 +214,7 @@ local function OnTextChanged(self)
 				local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[1])
 				icon1:SetTexture(icon)
 				iconCompanionType1 = "CRITTER"
-				iconCompanionID1 = hasSearchedLetterPetNum[2]
+				iconCompanionID1 = hasSearchedLetterPetNum[1]
 				iconName1:SetText(hasSearchedLetterPetNames[1])
 				if #hasSearchedLetterPetNames >= 2 then
 					local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[2])
@@ -306,7 +307,8 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 	-- Add a background
         local background = myFrame:CreateTexture(nil, "BACKGROUND")
         background:SetAllPoints(myFrame)
-        background:SetTexture(0, 0, 0, 0.7) -- Set the color and alpha of the background (black with 70% opacity)
+        background:SetTexture("Interface\\Buttons\\WHITE8x8")
+		background:SetVertexColor(0, 0, 0, 0.7) -- Set the color and alpha of the background (black with 70% opacity)
 
         -- Add a title to the frame
         local title = myFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -316,12 +318,12 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 	-- Add text for displaying number of pets
 		local numOfPets = myFrame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
         numOfPets:SetPoint("BOTTOMRIGHT", myFrame, "BOTTOMRIGHT", -20, 53)
-        numOfPets:SetText(GetNumCompanions("CRITTER"))
+        numOfPets:SetText(tostring(GetNumCompanions("CRITTER")))
 	
 	-- Add text for displaying number of mounts
 		local numOfMounts = myFrame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
         numOfMounts:SetPoint("BOTTOMRIGHT", myFrame, "BOTTOMRIGHT", -20, 23)
-        numOfMounts:SetText(GetNumCompanions("MOUNT"))
+        numOfMounts:SetText(tostring(GetNumCompanions("MOUNT")))
 
 	-- Make a frame for search box
 		local searchframe = CreateFrame("Frame", nil, myFrame)
@@ -396,7 +398,7 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         icon3:SetSize(50, 50)
         icon3:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -120)
 		
-	-- Add a overlay button to icon1
+	-- Add a overlay button to icon3
 		local icon3Overlay = CreateFrame("Button", nil, displayWindow)
 		icon3Overlay:SetSize(50, 50)
 		icon3Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -120)
@@ -414,7 +416,7 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         icon4:SetSize(50, 50)
         icon4:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -180)
 		
-	-- Add a overlay button to icon1
+	-- Add a overlay button to icon4
 		local icon4Overlay = CreateFrame("Button", nil, displayWindow)
 		icon4Overlay:SetSize(50, 50)
 		icon4Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -180)
@@ -428,7 +430,7 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         iconName4:SetPoint("TOPLEFT", icon4, "TOPRIGHT", 10, -15)
 
 	-- Add a checkbox to include pets
-        checkboxPets = CreateFrame("CheckButton", "MyPetMountSearchCheckbox", myFrame, "UICheckButtonTemplate")
+        checkboxPets = CreateFrame("CheckButton", "MyPetMountSearchCheckboxPets", myFrame, "UICheckButtonTemplate")
         checkboxPets:SetPoint("BOTTOMLEFT", myFrame, "BOTTOMLEFT", 10, 40)
 		checkboxPets:SetChecked(true)
 
@@ -438,7 +440,7 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         checkboxPetsName:SetText("Include Pets")
 
 	-- Add a checkbox to include mounts
-        checkboxMounts = CreateFrame("CheckButton", "MyPetMountSearchCheckbox", myFrame, "UICheckButtonTemplate")
+        checkboxMounts = CreateFrame("CheckButton", "MyPetMountSearchCheckboxMounts", myFrame, "UICheckButtonTemplate")
         checkboxMounts:SetPoint("BOTTOMLEFT", myFrame, "BOTTOMLEFT", 10, 10)
 		checkboxMounts:SetChecked(true)
 
