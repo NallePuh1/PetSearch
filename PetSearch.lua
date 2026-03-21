@@ -1,38 +1,16 @@
 ---@type Frame
 MyPetMountSearchFrame = MyPetMountSearchFrame
 
--- Function to get all mount names
-local function GetAllMountNames()
-    local mountNames = {}
 
-    -- Get the total number of mounts
-    local numMounts = GetNumCompanions("MOUNT")
-
-    -- Iterate through each mount to get its name
-    for i = 1, numMounts do
-        local _, mountName, _, _, _, _ = GetCompanionInfo("MOUNT", i)
-        table.insert(mountNames, mountName:lower())
-    end
-
-    return mountNames
-end
-
-
--- Function to get all pet names
-local function GetAllPetNames()
-    local petNames = {}
-
-    -- Get the total number of pets
-    local numPets = GetNumCompanions("CRITTER")
-
-    -- Iterate through each pet to get its name
-    for i = 1, numPets do
-        local _, petName, _, _, _, _ = GetCompanionInfo("CRITTER", i)
-        table.insert(petNames, petName:lower())
-    end
-
-    return petNames
-end
+-- Declare global variables
+local myFrame
+local displayWindow
+local icons = {}
+local iconNames = {}
+local companionTypeOfIcon = {}
+local companionIDOfIcon = {}
+local checkboxPets
+local checkboxMounts
 
 
 -- Add functionality to press the icons
@@ -50,16 +28,34 @@ local function OnIconClick(companionType, companionID)
 end
 
 
--- Declare global variables
-local myFrame
-local displayWindow
-local icons = {}
-local iconNames = {}
-local companionTypeOfIcon = {}
-local companionIDOfIcon = {}
-local checkboxPets
-local checkboxMounts
-local NamesNumbersType = {}
+-- Display Icons and names
+local function DisplayResults(results)
+	for i = 1, 4 do
+		local result = results[i]
+
+		if result then
+			local companionType
+			if result.type == "pet" then
+				companionType = "CRITTER"
+			else
+				companionType = "MOUNT"
+			end
+
+			local _, _, _, icon, _, _ = GetCompanionInfo(companionType, result.num)
+
+			icons[i]:SetTexture(icon)
+			iconNames[i]:SetText(result.name)
+			companionTypeOfIcon[i] = companionType
+			companionIDOfIcon[i] = result.num
+		else
+			-- Clear unused slots
+			icons[i]:SetTexture("")
+			iconNames[i]:SetText("")
+			companionTypeOfIcon[i] = nil
+			companionIDOfIcon[i] = nil
+		end
+	end
+end
 
 
 -- Function to run when the input box changes
@@ -68,203 +64,60 @@ local function OnTextChanged(self)
 	local includePets = checkboxPets:GetChecked()
     local includeMounts = checkboxMounts:GetChecked()
 	
-	icons[1]:SetTexture("")
-	icons[2]:SetTexture("")
-	icons[3]:SetTexture("")
-	icons[4]:SetTexture("")
-	iconNames[1]:SetText("")
-	iconNames[2]:SetText("")
-	iconNames[3]:SetText("")
-	iconNames[4]:SetText("")
-	companionTypeOfIcon[1] = nil
-	companionTypeOfIcon[2] = nil
-	companionTypeOfIcon[3] = nil
-	companionTypeOfIcon[4] = nil
-	companionIDOfIcon[1] = nil
-	companionIDOfIcon[2] = nil
-	companionIDOfIcon[3] = nil
-	companionIDOfIcon[4] = nil
-
-	
 	if searchText == "" then
-		-- Display all mounts and pets?
+		-- Clear all slots
+		for i = 1, 4 do
+			icons[i]:SetTexture("")
+			iconNames[i]:SetText("")
+			companionTypeOfIcon[i] = nil
+			companionIDOfIcon[i] = nil
+		end
 	else
-		-- See what to include in the search
-		if includePets and includeMounts then
-			-- Function to compare two tables based on the 'name' field
-			local function compareNames(a, b)
-    				return a.name < b.name
-			end
+		-- Function to compare names
+		local function compareNames(a, b)
+			return a.name < b.name
+		end
 
-			-- Get all pets and their number as a struct in an array
-			local petNames = GetAllPetNames()
-			local PetNamesNumbers = {}
-			for i = 1, #petNames do
-    				local structPetNamesNumber = {name = petNames[i], num = i, type = "pet"}
-    				table.insert(PetNamesNumbers, structPetNamesNumber)
-			end
+		-- Build unified list
+		local allCompanions = {}
 
-			-- Get all mounts and their number as a struct in an array
-			local mountNames = GetAllMountNames()
-			local MountNamesNumbers = {}
-			for i = 1, #mountNames do
-    				local structMountNamesNumber = {name = mountNames[i], num = i, type = "mount"}
-    				table.insert(MountNamesNumbers, structMountNamesNumber)
-			end
-
-			-- Add the arrays together and sort it
-			for i = 1, #petNames do
-				table.insert(NamesNumbersType, PetNamesNumbers[i])
-			end
-			for i = 1, #mountNames do
-				table.insert(NamesNumbersType, MountNamesNumbers[i])
-			end
-
-			table.sort(NamesNumbersType, compareNames)
-
-			-- Create a array only containing searched items
-			local hasSearchedLetter = {}
-			for i = 1, #NamesNumbersType do
-				if string.find(NamesNumbersType[i].name, searchText) ~= nil then
-					table.insert(hasSearchedLetter, NamesNumbersType[i])
-				end
-			end
-			
-			-- Show the icons
-			if #hasSearchedLetter >= 1 then
-				if hasSearchedLetter[1].type == "pet" then
-					local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[1].num)
-					icons[1]:SetTexture(icon)
-					companionTypeOfIcon[1] = "CRITTER"
-					companionIDOfIcon[1] = hasSearchedLetter[1].num
-				else
-					local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[1].num)
-					icons[1]:SetTexture(icon)
-					companionTypeOfIcon[1] = "MOUNT"
-					companionIDOfIcon[1] = hasSearchedLetter[1].num
-				end
-				iconNames[1]:SetText(hasSearchedLetter[1].name)
-				if #hasSearchedLetter >= 2 then
-					if hasSearchedLetter[2].type == "pet" then
-						local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[2].num)
-						icons[2]:SetTexture(icon)
-						companionTypeOfIcon[2] = "CRITTER"
-						companionIDOfIcon[2] = hasSearchedLetter[2].num
-					else
-						local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[2].num)
-						icons[2]:SetTexture(icon)
-						companionTypeOfIcon[2] = "MOUNT"
-						companionIDOfIcon[2] = hasSearchedLetter[2].num
-					end
-					iconNames[2]:SetText(hasSearchedLetter[2].name)
-					if #hasSearchedLetter >= 3 then
-						if hasSearchedLetter[3].type == "pet" then
-							local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[3].num)
-							icons[3]:SetTexture(icon)
-							companionTypeOfIcon[3] = "CRITTER"
-							companionIDOfIcon[3] = hasSearchedLetter[3].num
-						else
-							local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[3].num)
-							icons[3]:SetTexture(icon)
-							companionTypeOfIcon[3] = "MOUNT"
-							companionIDOfIcon[3] = hasSearchedLetter[3].num
-						end
-						iconNames[3]:SetText(hasSearchedLetter[3].name)
-						if #hasSearchedLetter >= 4 then
-							if hasSearchedLetter[4].type == "pet" then
-								local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[4].num)
-								icons[4]:SetTexture(icon)
-								companionTypeOfIcon[4] = "CRITTER"
-								companionIDOfIcon[4] = hasSearchedLetter[4].num
-							else
-								local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[4].num)
-								icons[4]:SetTexture(icon)
-								companionTypeOfIcon[4] = "MOUNT"
-								companionIDOfIcon[4] = hasSearchedLetter[4].num
-							end
-							iconNames[4]:SetText(hasSearchedLetter[4].name)
-							
-						end
-					end
-				end
-			end
-		elseif includePets then
-			local petNames = GetAllPetNames()
-			local hasSearchedLetterPetNames = {}
-			local hasSearchedLetterPetNum = {}
-			for i = 1, #petNames do
-				if string.find(petNames[i], searchText) ~= nil then
-					table.insert(hasSearchedLetterPetNames, petNames[i])
-					table.insert(hasSearchedLetterPetNum, i)
-				end
-			end
-			if #hasSearchedLetterPetNames >= 1 then
-				local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[1])
-				icons[1]:SetTexture(icon)
-				companionTypeOfIcon[1] = "CRITTER"
-				companionIDOfIcon[1] = hasSearchedLetterPetNum[1]
-				iconNames[1]:SetText(hasSearchedLetterPetNames[1])
-				if #hasSearchedLetterPetNames >= 2 then
-					local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[2])
-					icons[2]:SetTexture(icon)
-					companionTypeOfIcon[2] = "CRITTER"
-					companionIDOfIcon[2] = hasSearchedLetterPetNum[2]
-					iconNames[2]:SetText(hasSearchedLetterPetNames[2])
-					if #hasSearchedLetterPetNames >= 3 then
-						local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[3])
-						icons[3]:SetTexture(icon)
-						companionTypeOfIcon[3] = "CRITTER"
-						companionIDOfIcon[3] = hasSearchedLetterPetNum[3]
-						iconNames[3]:SetText(hasSearchedLetterPetNames[3])
-						if #hasSearchedLetterPetNames >= 4 then
-							local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[4])
-							icons[4]:SetTexture(icon)
-							companionTypeOfIcon[4] = "CRITTER"
-							companionIDOfIcon[4] = hasSearchedLetterPetNum[4]
-							iconNames[4]:SetText(hasSearchedLetterPetNames[4])
-						end
-					end
-				end
-			end
-		elseif includeMounts then
-			local mountNames = GetAllMountNames()
-			local hasSearchedLetterMountNames = {}
-			local hasSearchedLetterMountNum = {}
-			for i = 1, #mountNames do
-				if string.find(mountNames[i], searchText) ~= nil then
-					table.insert(hasSearchedLetterMountNames, mountNames[i])
-					table.insert(hasSearchedLetterMountNum, i)
-				end
-			end
-			if #hasSearchedLetterMountNames >= 1 then
-				local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[1])
-				icons[1]:SetTexture(icon)
-				companionTypeOfIcon[1] = "MOUNT"
-				companionIDOfIcon[1] = hasSearchedLetterMountNum[1]
-				iconNames[1]:SetText(hasSearchedLetterMountNames[1])
-				if #hasSearchedLetterMountNames >= 2 then
-					local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[2])
-					icons[2]:SetTexture(icon)
-					companionTypeOfIcon[2] = "MOUNT"
-					companionIDOfIcon[2] = hasSearchedLetterMountNum[2]
-					iconNames[2]:SetText(hasSearchedLetterMountNames[2])
-					if #hasSearchedLetterMountNames >= 3 then
-						local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[3])
-						icons[3]:SetTexture(icon)
-						companionTypeOfIcon[3] = "MOUNT"
-						companionIDOfIcon[3] = hasSearchedLetterMountNum[3]
-						iconNames[3]:SetText(hasSearchedLetterMountNames[3])
-						if #hasSearchedLetterMountNames >= 4 then
-							local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[4])
-							icons[4]:SetTexture(icon)
-							companionTypeOfIcon[4] = "MOUNT"
-							companionIDOfIcon[4] = hasSearchedLetterMountNum[4]
-							iconNames[4]:SetText(hasSearchedLetterMountNames[4])
-						end
-					end
-				end
+		if includePets then
+			local numPets = GetNumCompanions("CRITTER")
+			for i = 1, numPets do
+				local _, name = GetCompanionInfo("CRITTER", i)
+				table.insert(allCompanions, {
+					name = name:lower(),
+					num = i,
+					type = "pet"
+				})
 			end
 		end
+
+		if includeMounts then
+			local numMounts = GetNumCompanions("MOUNT")
+			for i = 1, numMounts do
+				local _, name = GetCompanionInfo("MOUNT", i)
+				table.insert(allCompanions, {
+					name = name:lower(),
+					num = i,
+					type = "mount"
+				})
+			end
+		end
+
+		-- Sort everything
+		table.sort(allCompanions, compareNames)
+
+		-- Filter search
+		local results = {}
+		for i = 1, #allCompanions do
+			if string.find(allCompanions[i].name, searchText) then
+				table.insert(results, allCompanions[i])
+			end
+		end
+
+		-- Display
+		DisplayResults(results)
 	end
 end
 
