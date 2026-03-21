@@ -220,13 +220,33 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 			button:SetSize(50, 50)
 			button:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
 
-			-- OnIconClick
+			-- On icon click
 			button:SetScript("OnClick", function()
 				OnIconClick(companionTypeOfIcon[i], companionIDOfIcon[i])
 			end)
 
 			-- On Hover: Highlight
 			button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
+
+			-- On Hover: Tooltip
+			button:SetScript("OnEnter", function(self)
+				local companionType = companionTypeOfIcon[i]
+				local companionID = companionIDOfIcon[i]
+
+				if companionType and companionID then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+
+					local _, _, spellID = GetCompanionInfo(companionType, companionID)
+					if spellID then
+						GameTooltip:SetHyperlink("spell:" .. spellID)
+					end
+
+					GameTooltip:Show()
+				end
+			end)
+			button:SetScript("OnLeave", function()
+				GameTooltip:Hide()
+			end)
 
 			-- Create name text
 			iconNames[i] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
