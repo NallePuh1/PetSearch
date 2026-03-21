@@ -220,9 +220,13 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 			button:SetSize(50, 50)
 			button:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
 
+			-- OnIconClick
 			button:SetScript("OnClick", function()
 				OnIconClick(companionTypeOfIcon[i], companionIDOfIcon[i])
 			end)
+
+			-- On Hover: Highlight
+			button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
 
 			-- Create name text
 			iconNames[i] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
