@@ -143,30 +143,30 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
                 	myFrame:Hide()  -- Hide the frame when the "Esc" key is pressed
             	end
         end)
-	myFrame:EnableKeyboard(true)
+		myFrame:EnableKeyboard(true)
 
-	-- Add a background
+		-- Add a background
         local background = myFrame:CreateTexture(nil, "BACKGROUND")
         background:SetAllPoints(myFrame)
         background:SetTexture("Interface\\Buttons\\WHITE8x8")
 		background:SetVertexColor(0, 0, 0, 0.7) -- Set the color and alpha of the background (black with 70% opacity)
 
-        -- Add a title to the frame
+    	-- Add a title to the frame
         local title = myFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
         title:SetPoint("TOP", myFrame, "TOP", 0, -10)
         title:SetText("PetSearch")
 
-	-- Add text for displaying number of pets
+		-- Add text for displaying number of pets
 		local numOfPets = myFrame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
         numOfPets:SetPoint("BOTTOMRIGHT", myFrame, "BOTTOMRIGHT", -20, 53)
         numOfPets:SetText(tostring(GetNumCompanions("CRITTER")))
 	
-	-- Add text for displaying number of mounts
+		-- Add text for displaying number of mounts
 		local numOfMounts = myFrame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
         numOfMounts:SetPoint("BOTTOMRIGHT", myFrame, "BOTTOMRIGHT", -20, 23)
         numOfMounts:SetText(tostring(GetNumCompanions("MOUNT")))
 
-	-- Make a frame for search box
+		-- Make a frame for search box
 		local searchframe = CreateFrame("Frame", nil, myFrame)
 		searchframe:SetSize(160, 20)
 		searchframe:SetPoint("TOPLEFT", myFrame, "TOPLEFT", 30, -30)
@@ -177,127 +177,76 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 				edgeSize = 16,
 				insets = { left = 4, right = 4, top = 4, bottom = 4 }
 			})
-	-- Add an input box for search
+		-- Add an input box for search
         local searchBox = CreateFrame("EditBox", nil, myFrame)
         searchBox:SetSize(160, 20)
         searchBox:SetPoint("TOPLEFT", myFrame, "TOPLEFT", 35, -30)
         searchBox:SetAutoFocus(false) -- Prevent the box from auto-focusing
         searchBox:SetFontObject(GameFontNormal)
         searchBox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-	-- Pass the reference of the search box to the OnTextChanged function
+		-- Pass the reference of the search box to the OnTextChanged function
         searchBox.OnTextChanged = OnTextChanged
-   	-- Set the script for the input box to trigger OnTextChanged when the content changes
+   		-- Set the script for the input box to trigger OnTextChanged when the content changes
 		searchBox:SetScript("OnTextChanged", function(self) OnTextChanged(self) end)
-	-- Handle the "ESCAPE" key to clear focus
+		-- Handle the "ESCAPE" key to clear focus
 		searchBox:SetScript("OnEscapePressed", function(self)
 				self:ClearFocus()
 			end)
 
-	-- Add a display window for icons
+		-- Add a display window for icons
         displayWindow = CreateFrame("Frame", nil, myFrame)
         displayWindow:SetSize(260, 100)
         displayWindow:SetPoint("TOPLEFT", searchBox, "BOTTOMLEFT", -10, -10)
 	
-	-- Add icon1
-        icons[1] = displayWindow:CreateTexture(nil, "OVERLAY")
-        icons[1]:SetSize(50, 50)
-        icons[1]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, 0)
-		
-	-- Add a overlay button to icon1
-		local icon1Overlay = CreateFrame("Button", nil, displayWindow)
-		icon1Overlay:SetSize(50, 50)
-		icon1Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, 0)
-		local f1 = function()
-			OnIconClick(companionTypeOfIcon[1], companionIDOfIcon[1])
+		-- Add icons
+		for i = 1, 4 do
+			-- Create icon
+			icons[i] = displayWindow:CreateTexture(nil, "OVERLAY")
+			icons[i]:SetSize(50, 50)
+			icons[i]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
+
+			-- Create clickable overlay
+			local button = CreateFrame("Button", nil, displayWindow)
+			button:SetSize(50, 50)
+			button:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
+
+			button:SetScript("OnClick", function()
+				OnIconClick(companionTypeOfIcon[i], companionIDOfIcon[i])
+			end)
+
+			-- Create name text
+			iconNames[i] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+			iconNames[i]:SetPoint("TOPLEFT", icons[i], "TOPRIGHT", 10, -15)
 		end
-		icon1Overlay:SetScript("OnClick", f1)
 
-	-- Add icon1's name
-        iconNames[1] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconNames[1]:SetPoint("TOPLEFT", icons[1], "TOPRIGHT", 10, -15)
-
-	-- Add icon2
-        icons[2] = displayWindow:CreateTexture(nil, "OVERLAY")
-        icons[2]:SetSize(50, 50)
-        icons[2]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -60)
-		
-	-- Add a overlay button to icon2
-		local icon2Overlay = CreateFrame("Button", nil, displayWindow)
-		icon2Overlay:SetSize(50, 50)
-		icon2Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -60)
-		local f2 = function()
-			OnIconClick(companionTypeOfIcon[2], companionIDOfIcon[2])
-		end
-		icon2Overlay:SetScript("OnClick", f2)
-
-	-- Add icon2's name
-        iconNames[2] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconNames[2]:SetPoint("TOPLEFT", icons[2], "TOPRIGHT", 10, -15)
-
-	-- Add icon3
-        icons[3] = displayWindow:CreateTexture(nil, "OVERLAY")
-        icons[3]:SetSize(50, 50)
-        icons[3]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -120)
-		
-	-- Add a overlay button to icon3
-		local icon3Overlay = CreateFrame("Button", nil, displayWindow)
-		icon3Overlay:SetSize(50, 50)
-		icon3Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -120)
-		local f3 = function()
-			OnIconClick(companionTypeOfIcon[3], companionIDOfIcon[3])
-		end
-		icon3Overlay:SetScript("OnClick", f3)
-
-	-- Add icon3's name
-        iconNames[3] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconNames[3]:SetPoint("TOPLEFT", icons[3], "TOPRIGHT", 10, -15)
-
-	-- Add icon4
-        icons[4] = displayWindow:CreateTexture(nil, "OVERLAY")
-        icons[4]:SetSize(50, 50)
-        icons[4]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -180)
-		
-	-- Add a overlay button to icon4
-		local icon4Overlay = CreateFrame("Button", nil, displayWindow)
-		icon4Overlay:SetSize(50, 50)
-		icon4Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -180)
-		local f4 = function()
-			OnIconClick(companionTypeOfIcon[4], companionIDOfIcon[4])
-		end
-		icon4Overlay:SetScript("OnClick", f4)
-
-	-- Add icon4's name
-        iconNames[4] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconNames[4]:SetPoint("TOPLEFT", icons[4], "TOPRIGHT", 10, -15)
-
-	-- Add a checkbox to include pets
+		-- Add a checkbox to include pets
         checkboxPets = CreateFrame("CheckButton", "MyPetMountSearchCheckboxPets", myFrame, "UICheckButtonTemplate")
         checkboxPets:SetPoint("BOTTOMLEFT", myFrame, "BOTTOMLEFT", 10, 40)
 		checkboxPets:SetChecked(true)
 
-	-- Add pets-checkbox name
+		-- Add pets-checkbox name
         local checkboxPetsName = myFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         checkboxPetsName:SetPoint("TOPLEFT", checkboxPets, "TOPRIGHT", 0, -6)
         checkboxPetsName:SetText("Include Pets")
 
-	-- Add a checkbox to include mounts
+		-- Add a checkbox to include mounts
         checkboxMounts = CreateFrame("CheckButton", "MyPetMountSearchCheckboxMounts", myFrame, "UICheckButtonTemplate")
         checkboxMounts:SetPoint("BOTTOMLEFT", myFrame, "BOTTOMLEFT", 10, 10)
 		checkboxMounts:SetChecked(true)
 
-	-- Add mounts-checkbox name
+		-- Add mounts-checkbox name
         local checkboxMountsName = myFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         checkboxMountsName:SetPoint("TOPLEFT", checkboxMounts, "TOPRIGHT", 0, -6)
         checkboxMountsName:SetText("Include Mounts")
 	
-    -- Add a close button
+    	-- Add a close button
         local closeButton = CreateFrame("Button", nil, myFrame, "UIPanelCloseButton")
         closeButton:SetPoint("TOPRIGHT", myFrame, "TOPRIGHT", -4, -4)
         closeButton:SetScript("OnClick", function() myFrame:Hide() end)
 
-    -- Show the frame
+    	-- Show the frame
         myFrame:Show()
-	-- Set focus on the search box
+		-- Set focus on the search box
         searchBox:SetFocus()
     end
 end
