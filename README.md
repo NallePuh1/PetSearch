@@ -47,8 +47,7 @@ Current version: **v1.0**
 
 ## 👨‍💻 Author
 
-Created by NallePuhh
-Plays pn Warmane Icecrown
+Created by NallePuhh, playing on Warmane Icecrown
 
 ---
 
