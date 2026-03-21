@@ -7,6 +7,7 @@ local myFrame
 local displayWindow
 local icons = {}
 local iconNames = {}
+local iconButtons = {}
 local companionTypeOfIcon = {}
 local companionIDOfIcon = {}
 local checkboxPets
@@ -26,7 +27,7 @@ local function BuildCompanionCache()
         table.insert(allCompanionsCache, {
             name = name:lower(),
             num = i,
-            type = "pet"
+            type = "CRITTER"
         })
     end
 
@@ -37,7 +38,7 @@ local function BuildCompanionCache()
         table.insert(allCompanionsCache, {
             name = name:lower(),
             num = i,
-            type = "mount"
+            type = "MOUNT"
         })
     end
 end
@@ -64,25 +65,21 @@ local function DisplayResults(results)
 		local result = results[i]
 
 		if result then
-			local companionType
-			if result.type == "pet" then
-				companionType = "CRITTER"
-			else
-				companionType = "MOUNT"
-			end
-
-			local _, _, _, icon, _, _ = GetCompanionInfo(companionType, result.num)
+			local _, _, _, icon, _, _ = GetCompanionInfo(result.type, result.num)
 
 			icons[i]:SetTexture(icon)
 			iconNames[i]:SetText(result.name)
-			companionTypeOfIcon[i] = companionType
+			companionTypeOfIcon[i] = result.type
 			companionIDOfIcon[i] = result.num
+			iconButtons[i]:Enable()
+			iconButtons[i]:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
 		else
 			-- Clear unused slots
 			icons[i]:SetTexture("")
 			iconNames[i]:SetText("")
 			companionTypeOfIcon[i] = nil
 			companionIDOfIcon[i] = nil
+			iconButtons[i]:Disable()
 		end
 	end
 end
@@ -100,6 +97,7 @@ local function UpdateSearchResults()
 			iconNames[i]:SetText("")
 			companionTypeOfIcon[i] = nil
 			companionIDOfIcon[i] = nil
+			iconButtons[i]:Disable()
 		end
 	else
 		-- Filter search
@@ -107,8 +105,8 @@ local function UpdateSearchResults()
 		for i = 1, #allCompanionsCache do
 			local companion = allCompanionsCache[i]
 
-			if (includePets and companion.type == "pet") or
-			(includeMounts and companion.type == "mount") then
+			if (includePets and companion.type == "CRITTER") or
+			(includeMounts and companion.type == "MOUNT") then
 				if string.find(companion.name, searchText) then
 					table.insert(results, companion)
 				end
@@ -216,20 +214,17 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 			icons[i]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
 
 			-- Create clickable overlay
-			local button = CreateFrame("Button", nil, displayWindow)
-			button:SetSize(50, 50)
-			button:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
+			iconButtons[i] = CreateFrame("Button", nil, displayWindow)
+			iconButtons[i]:SetSize(50, 50)
+			iconButtons[i]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
 
 			-- On icon click
-			button:SetScript("OnClick", function()
+			iconButtons[i]:SetScript("OnClick", function()
 				OnIconClick(companionTypeOfIcon[i], companionIDOfIcon[i])
 			end)
 
-			-- On Hover: Highlight
-			button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
-
 			-- On Hover: Tooltip
-			button:SetScript("OnEnter", function(self)
+			iconButtons[i]:SetScript("OnEnter", function(self)
 				local companionType = companionTypeOfIcon[i]
 				local companionID = companionIDOfIcon[i]
 
@@ -244,7 +239,7 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 					GameTooltip:Show()
 				end
 			end)
-			button:SetScript("OnLeave", function()
+			iconButtons[i]:SetScript("OnLeave", function()
 				GameTooltip:Hide()
 			end)
 
