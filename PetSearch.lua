@@ -11,6 +11,36 @@ local companionTypeOfIcon = {}
 local companionIDOfIcon = {}
 local checkboxPets
 local checkboxMounts
+local allCompanionsCache = {}
+local searchText
+
+
+-- Get all companions and store in cache
+local function BuildCompanionCache()
+    allCompanionsCache = {}
+
+    -- Pets
+    local numPets = GetNumCompanions("CRITTER")
+    for i = 1, numPets do
+        local _, name = GetCompanionInfo("CRITTER", i)
+        table.insert(allCompanionsCache, {
+            name = name:lower(),
+            num = i,
+            type = "pet"
+        })
+    end
+
+    -- Mounts
+    local numMounts = GetNumCompanions("MOUNT")
+    for i = 1, numMounts do
+        local _, name = GetCompanionInfo("MOUNT", i)
+        table.insert(allCompanionsCache, {
+            name = name:lower(),
+            num = i,
+            type = "mount"
+        })
+    end
+end
 
 
 -- Add functionality to press the icons
@@ -58,9 +88,8 @@ local function DisplayResults(results)
 end
 
 
--- Function to run when the input box changes
-local function OnTextChanged(self)
-    local searchText = self:GetText()
+-- Update the results
+local function UpdateSearchResults()
 	local includePets = checkboxPets:GetChecked()
     local includeMounts = checkboxMounts:GetChecked()
 	
@@ -73,52 +102,33 @@ local function OnTextChanged(self)
 			companionIDOfIcon[i] = nil
 		end
 	else
-		-- Function to compare names
-		local function compareNames(a, b)
-			return a.name < b.name
-		end
-
-		-- Build unified list
-		local allCompanions = {}
-
-		if includePets then
-			local numPets = GetNumCompanions("CRITTER")
-			for i = 1, numPets do
-				local _, name = GetCompanionInfo("CRITTER", i)
-				table.insert(allCompanions, {
-					name = name:lower(),
-					num = i,
-					type = "pet"
-				})
-			end
-		end
-
-		if includeMounts then
-			local numMounts = GetNumCompanions("MOUNT")
-			for i = 1, numMounts do
-				local _, name = GetCompanionInfo("MOUNT", i)
-				table.insert(allCompanions, {
-					name = name:lower(),
-					num = i,
-					type = "mount"
-				})
-			end
-		end
-
-		-- Sort everything
-		table.sort(allCompanions, compareNames)
-
 		-- Filter search
 		local results = {}
-		for i = 1, #allCompanions do
-			if string.find(allCompanions[i].name, searchText) then
-				table.insert(results, allCompanions[i])
+		for i = 1, #allCompanionsCache do
+			local companion = allCompanionsCache[i]
+
+			if (includePets and companion.type == "pet") or
+			(includeMounts and companion.type == "mount") then
+				if string.find(companion.name, searchText) then
+					table.insert(results, companion)
+				end
 			end
 		end
+
+		-- Arrange companions by name
+		table.sort(results, function(a, b)
+			return a.name < b.name
+		end)
 
 		-- Display
 		DisplayResults(results)
 	end
+end
+
+-- Function to run when the input box changes
+local function OnTextChanged(self)
+	searchText = self:GetText():lower()
+	UpdateSearchResults()
 end
 
 
@@ -223,6 +233,9 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         checkboxPets = CreateFrame("CheckButton", "MyPetMountSearchCheckboxPets", myFrame, "UICheckButtonTemplate")
         checkboxPets:SetPoint("BOTTOMLEFT", myFrame, "BOTTOMLEFT", 10, 40)
 		checkboxPets:SetChecked(true)
+		checkboxPets:SetScript("OnClick", function()
+			UpdateSearchResults()
+		end)
 
 		-- Add pets-checkbox name
         local checkboxPetsName = myFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -233,6 +246,9 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         checkboxMounts = CreateFrame("CheckButton", "MyPetMountSearchCheckboxMounts", myFrame, "UICheckButtonTemplate")
         checkboxMounts:SetPoint("BOTTOMLEFT", myFrame, "BOTTOMLEFT", 10, 10)
 		checkboxMounts:SetChecked(true)
+		checkboxMounts:SetScript("OnClick", function()
+			UpdateSearchResults()
+		end)
 
 		-- Add mounts-checkbox name
         local checkboxMountsName = myFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -244,6 +260,8 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         closeButton:SetPoint("TOPRIGHT", myFrame, "TOPRIGHT", -4, -4)
         closeButton:SetScript("OnClick", function() myFrame:Hide() end)
 
+		-- Load and save companions to cache
+		BuildCompanionCache()
     	-- Show the frame
         myFrame:Show()
 		-- Set focus on the search box
