@@ -1,5 +1,5 @@
 ## Interface: 30300
 ## Title: Pet and Mount Search
 ## Author: NallePuhh
-## Version: 1.1
+## Version: 1.0
 PetSearch.lua
