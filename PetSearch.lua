@@ -53,25 +53,14 @@ end
 -- Declare global variables
 local myFrame
 local displayWindow
-local icon1
-local icon2
-local icon3
-local icon4
-local iconName1
-local iconName2
-local iconName3
-local iconName4
-local iconCompanionType1
-local iconCompanionType2
-local iconCompanionType3
-local iconCompanionType4
-local iconCompanionID1
-local iconCompanionID2
-local iconCompanionID3
-local iconCompanionID4
+local icons = {}
+local iconNames = {}
+local companionTypeOfIcon = {}
+local companionIDOfIcon = {}
 local checkboxPets
 local checkboxMounts
 local NamesNumbersType = {}
+
 
 -- Function to run when the input box changes
 local function OnTextChanged(self)
@@ -79,23 +68,22 @@ local function OnTextChanged(self)
 	local includePets = checkboxPets:GetChecked()
     local includeMounts = checkboxMounts:GetChecked()
 	
-	icon1:SetTexture("")
-	icon2:SetTexture("")
-	icon3:SetTexture("")
-	icon4:SetTexture("")
-	iconName1:SetText("")
-	iconName2:SetText("")
-	iconName3:SetText("")
-	iconName4:SetText("")
-	iconCompanionType1 = nil
-	iconCompanionType2 = nil
-	iconCompanionType3 = nil
-	iconCompanionType4 = nil
-	iconCompanionID1 = nil
-	iconCompanionID2 = nil
-	iconCompanionID3 = nil
-	iconCompanionID4 = nil
-	NamesNumbersType = {}
+	icons[1]:SetTexture("")
+	icons[2]:SetTexture("")
+	icons[3]:SetTexture("")
+	icons[4]:SetTexture("")
+	iconNames[1]:SetText("")
+	iconNames[2]:SetText("")
+	iconNames[3]:SetText("")
+	iconNames[4]:SetText("")
+	companionTypeOfIcon[1] = nil
+	companionTypeOfIcon[2] = nil
+	companionTypeOfIcon[3] = nil
+	companionTypeOfIcon[4] = nil
+	companionIDOfIcon[1] = nil
+	companionIDOfIcon[2] = nil
+	companionIDOfIcon[3] = nil
+	companionIDOfIcon[4] = nil
 
 	
 	if searchText == "" then
@@ -146,55 +134,55 @@ local function OnTextChanged(self)
 			if #hasSearchedLetter >= 1 then
 				if hasSearchedLetter[1].type == "pet" then
 					local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[1].num)
-					icon1:SetTexture(icon)
-					iconCompanionType1 = "CRITTER"
-					iconCompanionID1 = hasSearchedLetter[1].num
+					icons[1]:SetTexture(icon)
+					companionTypeOfIcon[1] = "CRITTER"
+					companionIDOfIcon[1] = hasSearchedLetter[1].num
 				else
 					local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[1].num)
-					icon1:SetTexture(icon)
-					iconCompanionType1 = "MOUNT"
-					iconCompanionID1 = hasSearchedLetter[1].num
+					icons[1]:SetTexture(icon)
+					companionTypeOfIcon[1] = "MOUNT"
+					companionIDOfIcon[1] = hasSearchedLetter[1].num
 				end
-				iconName1:SetText(hasSearchedLetter[1].name)
+				iconNames[1]:SetText(hasSearchedLetter[1].name)
 				if #hasSearchedLetter >= 2 then
 					if hasSearchedLetter[2].type == "pet" then
 						local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[2].num)
-						icon2:SetTexture(icon)
-						iconCompanionType2 = "CRITTER"
-						iconCompanionID2 = hasSearchedLetter[2].num
+						icons[2]:SetTexture(icon)
+						companionTypeOfIcon[2] = "CRITTER"
+						companionIDOfIcon[2] = hasSearchedLetter[2].num
 					else
 						local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[2].num)
-						icon2:SetTexture(icon)
-						iconCompanionType2 = "MOUNT"
-						iconCompanionID2 = hasSearchedLetter[2].num
+						icons[2]:SetTexture(icon)
+						companionTypeOfIcon[2] = "MOUNT"
+						companionIDOfIcon[2] = hasSearchedLetter[2].num
 					end
-					iconName2:SetText(hasSearchedLetter[2].name)
+					iconNames[2]:SetText(hasSearchedLetter[2].name)
 					if #hasSearchedLetter >= 3 then
 						if hasSearchedLetter[3].type == "pet" then
 							local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[3].num)
-							icon3:SetTexture(icon)
-							iconCompanionType3 = "CRITTER"
-							iconCompanionID3 = hasSearchedLetter[3].num
+							icons[3]:SetTexture(icon)
+							companionTypeOfIcon[3] = "CRITTER"
+							companionIDOfIcon[3] = hasSearchedLetter[3].num
 						else
 							local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[3].num)
-							icon3:SetTexture(icon)
-							iconCompanionType3 = "MOUNT"
-							iconCompanionID3 = hasSearchedLetter[3].num
+							icons[3]:SetTexture(icon)
+							companionTypeOfIcon[3] = "MOUNT"
+							companionIDOfIcon[3] = hasSearchedLetter[3].num
 						end
-						iconName3:SetText(hasSearchedLetter[3].name)
+						iconNames[3]:SetText(hasSearchedLetter[3].name)
 						if #hasSearchedLetter >= 4 then
 							if hasSearchedLetter[4].type == "pet" then
 								local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetter[4].num)
-								icon4:SetTexture(icon)
-								iconCompanionType4 = "CRITTER"
-								iconCompanionID4 = hasSearchedLetter[4].num
+								icons[4]:SetTexture(icon)
+								companionTypeOfIcon[4] = "CRITTER"
+								companionIDOfIcon[4] = hasSearchedLetter[4].num
 							else
 								local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetter[4].num)
-								icon4:SetTexture(icon)
-								iconCompanionType4 = "MOUNT"
-								iconCompanionID4 = hasSearchedLetter[4].num
+								icons[4]:SetTexture(icon)
+								companionTypeOfIcon[4] = "MOUNT"
+								companionIDOfIcon[4] = hasSearchedLetter[4].num
 							end
-							iconName4:SetText(hasSearchedLetter[4].name)
+							iconNames[4]:SetText(hasSearchedLetter[4].name)
 							
 						end
 					end
@@ -212,28 +200,28 @@ local function OnTextChanged(self)
 			end
 			if #hasSearchedLetterPetNames >= 1 then
 				local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[1])
-				icon1:SetTexture(icon)
-				iconCompanionType1 = "CRITTER"
-				iconCompanionID1 = hasSearchedLetterPetNum[1]
-				iconName1:SetText(hasSearchedLetterPetNames[1])
+				icons[1]:SetTexture(icon)
+				companionTypeOfIcon[1] = "CRITTER"
+				companionIDOfIcon[1] = hasSearchedLetterPetNum[1]
+				iconNames[1]:SetText(hasSearchedLetterPetNames[1])
 				if #hasSearchedLetterPetNames >= 2 then
 					local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[2])
-					icon2:SetTexture(icon)
-					iconCompanionType2 = "CRITTER"
-					iconCompanionID2 = hasSearchedLetterPetNum[2]
-					iconName2:SetText(hasSearchedLetterPetNames[2])
+					icons[2]:SetTexture(icon)
+					companionTypeOfIcon[2] = "CRITTER"
+					companionIDOfIcon[2] = hasSearchedLetterPetNum[2]
+					iconNames[2]:SetText(hasSearchedLetterPetNames[2])
 					if #hasSearchedLetterPetNames >= 3 then
 						local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[3])
-						icon3:SetTexture(icon)
-						iconCompanionType3 = "CRITTER"
-						iconCompanionID3 = hasSearchedLetterPetNum[3]
-						iconName3:SetText(hasSearchedLetterPetNames[3])
+						icons[3]:SetTexture(icon)
+						companionTypeOfIcon[3] = "CRITTER"
+						companionIDOfIcon[3] = hasSearchedLetterPetNum[3]
+						iconNames[3]:SetText(hasSearchedLetterPetNames[3])
 						if #hasSearchedLetterPetNames >= 4 then
 							local _, _, _, icon, _, _ = GetCompanionInfo("CRITTER", hasSearchedLetterPetNum[4])
-							icon4:SetTexture(icon)
-							iconCompanionType4 = "CRITTER"
-							iconCompanionID4 = hasSearchedLetterPetNum[4]
-							iconName4:SetText(hasSearchedLetterPetNames[4])
+							icons[4]:SetTexture(icon)
+							companionTypeOfIcon[4] = "CRITTER"
+							companionIDOfIcon[4] = hasSearchedLetterPetNum[4]
+							iconNames[4]:SetText(hasSearchedLetterPetNames[4])
 						end
 					end
 				end
@@ -250,28 +238,28 @@ local function OnTextChanged(self)
 			end
 			if #hasSearchedLetterMountNames >= 1 then
 				local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[1])
-				icon1:SetTexture(icon)
-				iconCompanionType1 = "MOUNT"
-				iconCompanionID1 = hasSearchedLetterMountNum[1]
-				iconName1:SetText(hasSearchedLetterMountNames[1])
+				icons[1]:SetTexture(icon)
+				companionTypeOfIcon[1] = "MOUNT"
+				companionIDOfIcon[1] = hasSearchedLetterMountNum[1]
+				iconNames[1]:SetText(hasSearchedLetterMountNames[1])
 				if #hasSearchedLetterMountNames >= 2 then
 					local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[2])
-					icon2:SetTexture(icon)
-					iconCompanionType2 = "MOUNT"
-					iconCompanionID2 = hasSearchedLetterMountNum[2]
-					iconName2:SetText(hasSearchedLetterMountNames[2])
+					icons[2]:SetTexture(icon)
+					companionTypeOfIcon[2] = "MOUNT"
+					companionIDOfIcon[2] = hasSearchedLetterMountNum[2]
+					iconNames[2]:SetText(hasSearchedLetterMountNames[2])
 					if #hasSearchedLetterMountNames >= 3 then
 						local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[3])
-						icon3:SetTexture(icon)
-						iconCompanionType3 = "MOUNT"
-						iconCompanionID3 = hasSearchedLetterMountNum[3]
-						iconName3:SetText(hasSearchedLetterMountNames[3])
+						icons[3]:SetTexture(icon)
+						companionTypeOfIcon[3] = "MOUNT"
+						companionIDOfIcon[3] = hasSearchedLetterMountNum[3]
+						iconNames[3]:SetText(hasSearchedLetterMountNames[3])
 						if #hasSearchedLetterMountNames >= 4 then
 							local _, _, _, icon, _, _ = GetCompanionInfo("MOUNT", hasSearchedLetterMountNum[4])
-							icon4:SetTexture(icon)
-							iconCompanionType4 = "MOUNT"
-							iconCompanionID4 = hasSearchedLetterMountNum[4]
-							iconName4:SetText(hasSearchedLetterMountNames[4])
+							icons[4]:SetTexture(icon)
+							companionTypeOfIcon[4] = "MOUNT"
+							companionIDOfIcon[4] = hasSearchedLetterMountNum[4]
+							iconNames[4]:SetText(hasSearchedLetterMountNames[4])
 						end
 					end
 				end
@@ -358,76 +346,76 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
         displayWindow:SetPoint("TOPLEFT", searchBox, "BOTTOMLEFT", -10, -10)
 	
 	-- Add icon1
-        icon1 = displayWindow:CreateTexture(nil, "OVERLAY")
-        icon1:SetSize(50, 50)
-        icon1:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, 0)
+        icons[1] = displayWindow:CreateTexture(nil, "OVERLAY")
+        icons[1]:SetSize(50, 50)
+        icons[1]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, 0)
 		
 	-- Add a overlay button to icon1
 		local icon1Overlay = CreateFrame("Button", nil, displayWindow)
 		icon1Overlay:SetSize(50, 50)
 		icon1Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, 0)
 		local f1 = function()
-			OnIconClick(iconCompanionType1, iconCompanionID1)
+			OnIconClick(companionTypeOfIcon[1], companionIDOfIcon[1])
 		end
 		icon1Overlay:SetScript("OnClick", f1)
 
 	-- Add icon1's name
-        iconName1 = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconName1:SetPoint("TOPLEFT", icon1, "TOPRIGHT", 10, -15)
+        iconNames[1] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+        iconNames[1]:SetPoint("TOPLEFT", icons[1], "TOPRIGHT", 10, -15)
 
 	-- Add icon2
-        icon2 = displayWindow:CreateTexture(nil, "OVERLAY")
-        icon2:SetSize(50, 50)
-        icon2:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -60)
+        icons[2] = displayWindow:CreateTexture(nil, "OVERLAY")
+        icons[2]:SetSize(50, 50)
+        icons[2]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -60)
 		
 	-- Add a overlay button to icon2
 		local icon2Overlay = CreateFrame("Button", nil, displayWindow)
 		icon2Overlay:SetSize(50, 50)
 		icon2Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -60)
 		local f2 = function()
-			OnIconClick(iconCompanionType2, iconCompanionID2)
+			OnIconClick(companionTypeOfIcon[2], companionIDOfIcon[2])
 		end
 		icon2Overlay:SetScript("OnClick", f2)
 
 	-- Add icon2's name
-        iconName2 = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconName2:SetPoint("TOPLEFT", icon2, "TOPRIGHT", 10, -15)
+        iconNames[2] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+        iconNames[2]:SetPoint("TOPLEFT", icons[2], "TOPRIGHT", 10, -15)
 
 	-- Add icon3
-        icon3 = displayWindow:CreateTexture(nil, "OVERLAY")
-        icon3:SetSize(50, 50)
-        icon3:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -120)
+        icons[3] = displayWindow:CreateTexture(nil, "OVERLAY")
+        icons[3]:SetSize(50, 50)
+        icons[3]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -120)
 		
 	-- Add a overlay button to icon3
 		local icon3Overlay = CreateFrame("Button", nil, displayWindow)
 		icon3Overlay:SetSize(50, 50)
 		icon3Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -120)
 		local f3 = function()
-			OnIconClick(iconCompanionType3, iconCompanionID3)
+			OnIconClick(companionTypeOfIcon[3], companionIDOfIcon[3])
 		end
 		icon3Overlay:SetScript("OnClick", f3)
 
 	-- Add icon3's name
-        iconName3 = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconName3:SetPoint("TOPLEFT", icon3, "TOPRIGHT", 10, -15)
+        iconNames[3] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+        iconNames[3]:SetPoint("TOPLEFT", icons[3], "TOPRIGHT", 10, -15)
 
 	-- Add icon4
-        icon4 = displayWindow:CreateTexture(nil, "OVERLAY")
-        icon4:SetSize(50, 50)
-        icon4:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -180)
+        icons[4] = displayWindow:CreateTexture(nil, "OVERLAY")
+        icons[4]:SetSize(50, 50)
+        icons[4]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -180)
 		
 	-- Add a overlay button to icon4
 		local icon4Overlay = CreateFrame("Button", nil, displayWindow)
 		icon4Overlay:SetSize(50, 50)
 		icon4Overlay:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -180)
 		local f4 = function()
-			OnIconClick(iconCompanionType4, iconCompanionID4)
+			OnIconClick(companionTypeOfIcon[4], companionIDOfIcon[4])
 		end
 		icon4Overlay:SetScript("OnClick", f4)
 
 	-- Add icon4's name
-        iconName4 = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        iconName4:SetPoint("TOPLEFT", icon4, "TOPRIGHT", 10, -15)
+        iconNames[4] = displayWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+        iconNames[4]:SetPoint("TOPLEFT", icons[4], "TOPRIGHT", 10, -15)
 
 	-- Add a checkbox to include pets
         checkboxPets = CreateFrame("CheckButton", "MyPetMountSearchCheckboxPets", myFrame, "UICheckButtonTemplate")
