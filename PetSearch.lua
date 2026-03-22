@@ -139,7 +139,7 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
     else
         -- Create a basic frame
         myFrame = CreateFrame("Frame", "MyPetMountSearchFrame", UIParent)
-        myFrame:SetSize(250, 390)
+        myFrame:SetSize(300, 390)
         myFrame:SetPoint("CENTER", UIParent, "CENTER")
         myFrame:SetMovable(true)
         myFrame:EnableMouse(true)
@@ -176,7 +176,7 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 
 		-- Make a frame for search box
 		local searchframe = CreateFrame("Frame", nil, myFrame)
-		searchframe:SetSize(160, 20)
+		searchframe:SetSize(220, 20)
 		searchframe:SetPoint("TOPLEFT", myFrame, "TOPLEFT", 30, -30)
 		searchframe:SetBackdrop({
 				edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
