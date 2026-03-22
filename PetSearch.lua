@@ -219,19 +219,17 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 			iconButtons[i]:SetPoint("TOPLEFT", displayWindow, "TOPLEFT", -13, -(i - 1) * 60)
 
 			-- On icon click
+			iconButtons[i]:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 			iconButtons[i]:SetScript("OnClick", function()
 				OnIconClick(companionTypeOfIcon[i], companionIDOfIcon[i])
 			end)
 
 			-- On Hover: Tooltip
 			iconButtons[i]:SetScript("OnEnter", function(self)
-				local companionType = companionTypeOfIcon[i]
-				local companionID = companionIDOfIcon[i]
-
-				if companionType and companionID then
+				if companionTypeOfIcon[i] and companionIDOfIcon[i] then
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 
-					local _, _, spellID = GetCompanionInfo(companionType, companionID)
+					local _, _, spellID = GetCompanionInfo(companionTypeOfIcon[i], companionIDOfIcon[i])
 					if spellID then
 						GameTooltip:SetHyperlink("spell:" .. spellID)
 					end
