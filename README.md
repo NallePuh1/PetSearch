@@ -32,7 +32,7 @@ A simple and lightweight addon for **World of Warcraft 3.3.5** that lets you qui
 ## 🛠️ Future Improvements
 
 * [ ] Highligt matching text
-* [ ] Hovering display and selection effect
+* [x] Hovering display and selection effect
 * [ ] Scrolling list to view more than 4 results
 * [ ] Rarity color on display name
 * [ ] The ability to use normal keybinds when the window is not selected
