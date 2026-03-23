@@ -42,7 +42,7 @@ A simple and lightweight addon for **World of Warcraft 3.3.5** that lets you qui
 
 ## 📦 Version
 
-Current version: **v1.0**
+Current version: **v1.1.0**
 
 ---
 
