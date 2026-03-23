@@ -16,7 +16,8 @@ A simple and lightweight addon for **World of Warcraft 3.3.5** that lets you qui
 
 ## 📸 Preview
 
-<img width="299" height="326" alt="Skärmbild 2026-03-21 161359" src="https://github.com/user-attachments/assets/f34a13e1-f5ae-4ce7-8cc7-71f153bba70e" />
+<img width="357" height="327" alt="image" src="https://github.com/user-attachments/assets/e2d80fc5-2a97-408c-89fa-7c41118b19c6" />
+
 
 ---
 
