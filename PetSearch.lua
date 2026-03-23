@@ -25,6 +25,7 @@ local function BuildCompanionCache()
     for i = 1, numPets do
         local _, name = GetCompanionInfo("CRITTER", i)
         table.insert(allCompanionsCache, {
+			displayName = name,
             name = name:lower(),
             num = i,
             type = "CRITTER"
@@ -36,6 +37,7 @@ local function BuildCompanionCache()
     for i = 1, numMounts do
         local _, name = GetCompanionInfo("MOUNT", i)
         table.insert(allCompanionsCache, {
+			displayName = name,
             name = name:lower(),
             num = i,
             type = "MOUNT"
@@ -59,6 +61,27 @@ local function OnIconClick(companionType, companionID)
 end
 
 
+-- Highlight the matching part of the companion name entries
+local function HighlightMatch(name, search)
+    if not search or search == "" then
+        return name
+    end
+
+    local startPos, endPos = string.find(name:lower(), search)
+
+    if not startPos then
+        return name
+    end
+
+    local before = string.sub(name, 1, startPos - 1)
+    local match = string.sub(name, startPos, endPos)
+    local after = string.sub(name, endPos + 1)
+
+    -- Yellow highlight
+    return before .. "|cffffff77" .. match .. "|r" .. after
+end
+
+
 -- Display Icons and names
 local function DisplayResults(results)
 	for i = 1, 4 do
@@ -68,7 +91,8 @@ local function DisplayResults(results)
 			local _, _, _, icon, _, _ = GetCompanionInfo(result.type, result.num)
 
 			icons[i]:SetTexture(icon)
-			iconNames[i]:SetText(result.name)
+			local highlighted = HighlightMatch(result.displayName, searchText)
+			iconNames[i]:SetText(highlighted)
 			companionTypeOfIcon[i] = result.type
 			companionIDOfIcon[i] = result.num
 			iconButtons[i]:Enable()
