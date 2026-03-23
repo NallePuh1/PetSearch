@@ -277,6 +277,16 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 		checkboxPets:SetScript("OnClick", function()
 			UpdateSearchResults()
 		end)
+		checkboxPets:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:SetText("Include Pets", 1, 1, 1)
+			GameTooltip:AddLine("Toggle whether pets appear in the search results.", 1, 0.8125, 0, true)
+			GameTooltip:Show()
+		end)
+
+		checkboxPets:SetScript("OnLeave", function()
+			GameTooltip:Hide()
+		end)
 
 		-- Add pets-checkbox name
         local checkboxPetsName = myFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -289,6 +299,16 @@ function SlashCmdList.MYPETMOUNTSEARCH(msg, editbox)
 		checkboxMounts:SetChecked(true)
 		checkboxMounts:SetScript("OnClick", function()
 			UpdateSearchResults()
+		end)
+		checkboxMounts:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:SetText("Include Mounts", 1, 1, 1)
+			GameTooltip:AddLine("Toggle whether mounts appear in the search results.", 1, 0.8125, 0, true)
+			GameTooltip:Show()
+		end)
+
+		checkboxMounts:SetScript("OnLeave", function()
+			GameTooltip:Hide()
 		end)
 
 		-- Add mounts-checkbox name
